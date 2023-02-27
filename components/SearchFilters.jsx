@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { MdCancel } from 'react-icons/md';
 import Image from 'next/image';
 
-import { filterData, getFilterValues } from '~/utils/filterData';
+import { filterData, getFilterValues } from '../utils/filterData';
 import { baseUrl, fetchApi } from '../utils/fetchApi';
 import noresult from '../assets/images/noresult.svg';
 
-const SearchFilters = () => {
-  const [filters, setFilters] = useState(filterData);
+export default function SearchFilters() {
+  const [filters] = useState(filterData);
   const [searchTerm, setSearchTerm] = useState('');
   const [locationData, setLocationData] = useState();
   const [showLocations, setShowLocations] = useState(false);
@@ -28,7 +28,7 @@ const SearchFilters = () => {
       }
     });
 
-    router.push({ pathname: path, query });
+    router.push({ pathname: path, query: query });
   };
 
   useEffect(() => {
@@ -46,13 +46,13 @@ const SearchFilters = () => {
 
   return (
     <Flex bg="gray.100" p="4" justifyContent="center" flexWrap="wrap">
-      {filters.map((filter) => (
+      {filters?.map((filter) => (
         <Box key={filter.queryName}>
           <Select
+            onChange={(e) => searchProperties({ [filter.queryName]: e.target.value })}
             placeholder={filter.placeholder}
             w="fit-content"
             p="2"
-            onChange={(e) => searchProperties({ [filter.queryName]: e.target.value })}
           >
             {filter?.items?.map((item) => (
               <option value={item.value} key={item.value}>
@@ -83,7 +83,7 @@ const SearchFilters = () => {
             {searchTerm !== '' && (
               <Icon
                 as={MdCancel}
-                pos="relative"
+                pos="absolute"
                 cursor="pointer"
                 right="5"
                 top="5"
@@ -135,6 +135,4 @@ const SearchFilters = () => {
       </Flex>
     </Flex>
   );
-};
-
-export default SearchFilters;
+}
